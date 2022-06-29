@@ -6,5 +6,8 @@ import fr.phoenix.engine.vector.RayCast;
 import java.awt.*;
 
 public interface RenderableOject {
-    void render(Graphics g, Camera camera);
+    //void render(Graphics g, Camera camera);
+
+    Color color();
+    double raycast(RayCast ray);
 }

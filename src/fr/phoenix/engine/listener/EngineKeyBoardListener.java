@@ -23,7 +23,6 @@ public class EngineKeyBoardListener extends AbstractAction {
         forward = forward.normalize().times(Player.getMOVEMENT_SPEED());
         Vector3 right = forward.crossProduct(new Vector3(0, 1, 0)).normalize().times(Player.getMOVEMENT_SPEED());
         String ac = actionEvent.getActionCommand();
-        System.out.println(ac);
         if (ac.equals("w"))
             engine.getPlayer().getPosition().move(forward);
         if (ac.equals("a"))

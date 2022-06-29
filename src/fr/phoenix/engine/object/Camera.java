@@ -1,15 +1,17 @@
 package fr.phoenix.engine.object;
 
 import fr.phoenix.Display;
+import fr.phoenix.engine.vector.RayCast;
 import fr.phoenix.engine.vector.Vector2;
 import fr.phoenix.engine.vector.Vector3;
 import lombok.Getter;
-import lombok.Setter;
 
 public class Camera {
 
     @Getter
-    private final int FOV = 90; //in degree
+    private final int FOV = 90; //in degreeObject
+    @Getter
+    public Vector2 resolution = new Vector2(200, 200);
 
     @Getter
     private Vector2 rotation = new Vector2(0,0); //in degree
@@ -81,5 +83,9 @@ public class Camera {
 
     public void rotate(Vector2 rotation) {
         this.rotation = this.rotation.add(rotation);
+    }
+
+    public RayCast getRay(int i, int j){
+        return new RayCast(pos(), dir(new Vector2(rotation.getX()+FOV/2.0-FOV * 1.0 * i/Display.getWIDTH(),rotation.getY()+FOV/2.0-FOV * 1.0 * j/Display.getHEIGHT())));
     }
 }

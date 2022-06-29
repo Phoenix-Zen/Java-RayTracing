@@ -3,17 +3,17 @@ package fr.phoenix.engine;
 import fr.phoenix.Display;
 import fr.phoenix.engine.object.Object3D;
 import fr.phoenix.engine.object.Player;
+import fr.phoenix.engine.object.basics.Plan;
 import fr.phoenix.engine.object.basics.Sphere;
+import fr.phoenix.engine.object.basics.Triangle;
 import fr.phoenix.engine.object.render.RenderableOject;
 import fr.phoenix.engine.vector.RayCast;
 import fr.phoenix.engine.vector.Vector2;
 import fr.phoenix.engine.vector.Vector3;
 import lombok.Getter;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +26,13 @@ public class GraphicEngine{
     @Getter
     private final Display display;
 
-    public GraphicEngine(Display display) throws HeadlessException {
-        objects.add(new Sphere(1f, new Vector3(2,0,0)));
+    public GraphicEngine(Display display) {
         this.display = display;
         this.width = display.getWidth();
         this.height = display.getHeight();
+        objects.add(new Sphere(1, new Vector3(7, 0, 6), Color.RED));
+        objects.add(new Plan(new Vector3(0, -1,0), new Vector3(1, 0,0), new Vector3(0, 0,1), Color.CYAN));
+        //objects.add(new Plan(new Vector3(0, 0,1), new Vector3(1, 0,0), new Vector3(0, 1,0), Color.BLUE));
     }
 
     private List<Object3D> objects = new ArrayList<>();
@@ -40,37 +42,38 @@ public class GraphicEngine{
     @Getter
     private Player player = new Player();
 
-    public void paint(Graphics g) {
-        for (Object3D object : objects) {
-            if (object instanceof RenderableOject) {
-                RenderableOject ro = (RenderableOject) object;
-                ro.render(g, player.getCamera());
+    public void paint(Graphics graphics) {
+        int resX = (int) player.getCamera().resolution.getX();
+        int resY = (int) player.getCamera().resolution.getY();
+        double ratioX = Display.getWIDTH() * 1.0 / resX;
+        double ratioY = Display.getHEIGHT() * 1.0 / resY;
+        BufferedImage image = new BufferedImage(resX, resY, BufferedImage.TYPE_INT_RGB);
+        WritableRaster raster = image.getRaster();
+        for (int i = 0; i < resX; i++) {
+            for (int j = 0; j < resY; j++) {
+                RayCast ray = player.getCamera().getRay((int) (i * ratioX), (int) (j * ratioY));
+                float v = 1;
+                Color color = null;
+                for (Object3D obj : objects) {
+                    if (!(obj instanceof RenderableOject))
+                        continue;
+                    RenderableOject ro = (RenderableOject) obj;
+                    double luminosity = ro.raycast(ray);
+                    if (luminosity != 1) {
+                        v = (float) luminosity;
+                        color = ro.color();
+                        break;
+                    }
+                }
+                if (color != null)
+                    raster.setPixel(i,j,new float[]{v*color.getRed(),v*color.getGreen(),v*color.getBlue()});
             }
         }
 
-        /*
-        g.clearRect(0,0, width, height);
-        for (int i = 0; i < width; i++)
-         for (int j = 25; j < height; j++){
-            paintPixel(g, i,j);
-         }
+        graphics.drawImage(image.getScaledInstance(Display.getWIDTH(), Display.getHEIGHT(), Image.SCALE_DEFAULT), 0, 20, null);
     }
-    private void paintPixel(Graphics g, int i, int j) {
-        Vector3 dir = player.getCamera().getDir(i,j);
-        Vector3 origin = player.getPosition();
-        RayCast rayCast = new RayCast(origin, dir);
-        for (Object3D object : objects) {
-            if (object instanceof RenderableOject){
-                RenderableOject ro = (RenderableOject) object;
-                if (ro.intersect(rayCast))
-                    g.setColor(Color.RED);
-                else
-                    g.setColor(Color.WHITE);
-                g.drawLine(i,j,i,j);
-            }
-        }*/
-    }
-    boolean reversed = false;
+
+    private boolean reversed = false;
     public void update() {
         if (!reversed)
             return;

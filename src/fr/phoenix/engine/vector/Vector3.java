@@ -61,4 +61,8 @@ public class Vector3 extends Vector2 implements Cloneable{
         y+=v.y;
         z+=v.z;
     }
+
+    public boolean isZero() {
+        return x == 0 && y == 0 && z == 0;
+    }
 }

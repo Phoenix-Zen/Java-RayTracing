@@ -23,9 +23,9 @@ public class Display extends Canvas implements Runnable {
     private JFrame frame;
     private static String title = "Engine";
     @Getter
-    private static int WIDTH = 800;
+    private static int WIDTH = 1200;
     @Getter
-    private static int HEIGHT = 800;
+    private static int HEIGHT = 1200;
 
     @Getter
     private static Vector2 dimension;
@@ -118,6 +118,7 @@ public class Display extends Canvas implements Runnable {
         g.clearRect(0,0, WIDTH, HEIGHT);
         g.setColor(Color.BLACK);
         engine.paint(g);
+        g.setColor(Color.BLACK);
         g.drawString("FPS "+ fps, 0,12);
         g.dispose();
         bs.show();
@@ -126,6 +127,5 @@ public class Display extends Canvas implements Runnable {
     private void update(){
         engine.update();
         mListener.update();
-        System.out.println(engine.getPlayer().getPosition());
     }
 }

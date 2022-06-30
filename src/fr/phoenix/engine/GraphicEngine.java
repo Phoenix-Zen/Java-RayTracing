@@ -4,6 +4,7 @@ import fr.phoenix.Display;
 import fr.phoenix.engine.object.Object3D;
 import fr.phoenix.engine.object.Player;
 import fr.phoenix.engine.object.basics.Plan;
+import fr.phoenix.engine.object.basics.Plan2;
 import fr.phoenix.engine.object.basics.Sphere;
 import fr.phoenix.engine.object.render.Color;
 import fr.phoenix.engine.object.render.RenderableOject;
@@ -49,11 +50,10 @@ public class GraphicEngine{
         this.width = display.getWidth();
         this.height = display.getHeight();
 
-        this.light = new Vector3(2, 4, 3);
+        this.light = new Vector3(2, 8, 3);
 
         objects.add(new Sphere(1, new Vector3(4, 0, 0), Color.WHITE, .6));
-        objects.add(new Sphere(1, new Vector3(4, 0, 3), Color.RED, .2));
-        objects.add(new Sphere(1, new Vector3(4, 0, 6), Color.BLUE));
+        objects.add(new Plan2(new Vector3(-4,0,0), new Vector3(1, 0, 0), Color.WHITE));
         //objects.add(new Plan(-1, Color.DARK_GRAY));
         //objects.add(new Plan(new Vector3(0, 0,1), new Vector3(1, 0,0), new Vector3(0, 1,0), Color.BLUE));
     }

@@ -28,4 +28,14 @@ public class RayCast {
         this.origin = origin;
         this.direction = direction.normalize();
     }
+
+    public RayCast clone(){
+        return new RayCast(origin, direction);
+    }
+    public void apply(RayCast rayCast){
+        hit = rayCast.getHit();
+        object3D = rayCast.getObject3D();
+        normal = rayCast.getNormal();
+        reflection = rayCast.getReflection();
+    }
 }

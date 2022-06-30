@@ -40,7 +40,7 @@ public class GraphicEngine{
 
     public GraphicEngine(Display display) {
         try {
-            skybox = ImageIO.read(new File("/home/flo/IdeaProjects/SimpleGame/assets/SkyBox2.png"));
+            skybox = ImageIO.read(new File("/home/flo/IdeaProjects/SimpleGame/assets/Sky.jpg"));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -51,8 +51,10 @@ public class GraphicEngine{
 
         this.light = new Vector3(2, 4, 3);
 
-        objects.add(new Sphere(1, new Vector3(4, 0, 0), Color.WHITE));
-        objects.add(new Plan(-1, Color.DARK_GRAY));
+        objects.add(new Sphere(1, new Vector3(4, 0, 0), Color.WHITE, .6));
+        objects.add(new Sphere(1, new Vector3(4, 0, 3), Color.RED, .2));
+        objects.add(new Sphere(1, new Vector3(4, 0, 6), Color.BLUE));
+        //objects.add(new Plan(-1, Color.DARK_GRAY));
         //objects.add(new Plan(new Vector3(0, 0,1), new Vector3(1, 0,0), new Vector3(0, 1,0), Color.BLUE));
     }
 
@@ -64,17 +66,23 @@ public class GraphicEngine{
     private Player player = new Player();
 
     public boolean rayCast(RayCast ray){
+        RayCast nearest = null;
         for (Object3D obj : objects) {
+            RayCast clone = ray.clone();
             if (!(obj instanceof RenderableOject))
                 continue;
             RenderableOject ro = (RenderableOject) obj;
-            Vector3 hit = new Vector3(0,0,0);
-            if (ro.raycast(ray)) {
-                ray.setObject3D(obj);
-                return true;
+            if (ro.raycast(clone)) {
+                if (nearest == null || clone.getHit().sub(clone.getOrigin()).length() < nearest.getHit().sub(nearest.getOrigin()).length()) {
+                    clone.setObject3D(obj);
+                    nearest = clone;
+                }
             }
         }
-        return false;
+        if (nearest == null)
+            return false;
+        ray.apply(nearest);
+        return true;
     }
 
     public Color getColor(RayCast ray){

@@ -10,11 +10,16 @@ public class Sphere extends Object3D implements RenderableOject {
 
     private final double rayon;
     private final Color color;
+    private final double reflection;
 
     public Sphere(double rayon, Vector3 position, Color color) {
+        this(rayon, position, color, 0);
+    }
+    public Sphere(double rayon, Vector3 position, Color color, double reflection) {
         this.rayon = rayon;
         this.position = position;
         this.color = color;
+        this.reflection = reflection;
     }
 
 
@@ -69,11 +74,9 @@ public class Sphere extends Object3D implements RenderableOject {
     public boolean raycast(RayCast ray) {
         Vector3 dir = ray.getDirection();
         Vector3 hyp = position.sub(ray.getOrigin());
-        double side = hyp.projectOn(dir);
-
         double angle = (Math.acos(hyp.dotProduct(dir)/hyp.length()*dir.length()))*180/Math.PI;
-        if (angle > 90)
-            return false;
+        if (angle > 90) {return false;}
+        double side = hyp.projectOn(dir);
 
         //0 dark | 1 light
         if (rayon*rayon <= hyp.squaredLength() - side*side)
@@ -84,7 +87,7 @@ public class Sphere extends Object3D implements RenderableOject {
         Vector3 normal = onSphere.sub(position).normalize();
         ray.setNormal(normal);
         ray.setHit(onSphere);
-        ray.setReflection(.3);
+        ray.setReflection(reflection);
         return true;
     }
 

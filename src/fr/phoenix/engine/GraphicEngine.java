@@ -3,10 +3,7 @@ package fr.phoenix.engine;
 import fr.phoenix.Display;
 import fr.phoenix.engine.object.Object3D;
 import fr.phoenix.engine.object.Player;
-import fr.phoenix.engine.object.basics.Plan;
-import fr.phoenix.engine.object.basics.Plan2;
-import fr.phoenix.engine.object.basics.Sphere;
-import fr.phoenix.engine.object.basics.Triangle;
+import fr.phoenix.engine.object.basics.*;
 import fr.phoenix.engine.object.render.Color;
 import fr.phoenix.engine.object.render.RenderableOject;
 import fr.phoenix.engine.vector.RayCast;
@@ -51,10 +48,10 @@ public class GraphicEngine{
         this.width = display.getWidth();
         this.height = display.getHeight();
 
-        this.light = new Vector3(0, 2, 0);
+        this.light = new Vector3(0, 5, 0);
 
         objects.add(new Sphere(1, new Vector3(4, 0, 0), Color.WHITE, .6));
-        objects.add(new Triangle(new Vector3(3,1,1), new Vector3(3,1,0), new Vector3(3,0,0), Color.BLUE, .5));
+        objects.add(new Cube(new Vector3(3,0,3), new Vector3(1,0,0), new Vector3(0,0,1), 2,Color.WHITE, .15));
         //objects.add(new Plan2(new Vector3(-4,0,0), new Vector3(1, 0, 0), Color.WHITE));
         //objects.add(new Plan(new Vector3(0, 0,1), new Vector3(1, 0,0), new Vector3(0, 1,0), Color.BLUE));
     }
@@ -75,7 +72,8 @@ public class GraphicEngine{
             RenderableOject ro = (RenderableOject) obj;
             if (ro.raycast(clone)) {
                 if (nearest == null || clone.getHit().sub(clone.getOrigin()).length() < nearest.getHit().sub(nearest.getOrigin()).length()) {
-                    clone.setObject3D(obj);
+                    if (clone.getObject3D() == null)
+                        clone.setObject3D(obj);
                     nearest = clone;
                 }
             }

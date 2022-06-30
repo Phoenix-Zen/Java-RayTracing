@@ -63,6 +63,6 @@ public class Triangle extends Object3D implements RenderableOject {
         double v = (d11 * d20 - d01 * d21) / denom;
         double w = (d00 * d21 - d01 * d20) / denom;
         double u = 1.0 - v - w;
-        return u > 0 && u < 1 && v > 0 && v < 1 && w > 0 && w < 1;
+        return u >= 0 && u <= 1 && v >= 0 && v <= 1 && w >= 0 && w <= 1;
     }
 }

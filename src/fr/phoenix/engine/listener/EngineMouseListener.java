@@ -54,7 +54,7 @@ public class EngineMouseListener implements MouseListener {
     public void update() {
         Point current = MouseInfo.getPointerInfo().getLocation();
         //last.y-current.y
-        engine.getPlayer().getCamera().rotate(new Vector2(last.x-current.x, last.y-current.y).times(0.01));
+        engine.getPlayer().getCamera().rotate(new Vector2(last.x-current.x, last.y-current.y).times(0.1));
         r.mouseMove(screenSize.width/2, screenSize.height/2);
     }
 }

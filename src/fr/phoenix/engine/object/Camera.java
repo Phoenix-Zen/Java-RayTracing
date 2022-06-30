@@ -14,7 +14,7 @@ public class Camera {
     public Vector2 resolution = new Vector2(150, 150);
 
     @Getter
-    private Vector2 rotation = new Vector2(0,0); //in degree
+    private Vector2 rotation = new Vector2(-90,0); //in degree
     //X: 0.5065019615726758, Y:0.6977904598416802, Z:0.5065019615726757 | 0
 
     //VECT2 X: 0.7071067811865476, Y:0.0, Z:0.7071067811865475 | 0

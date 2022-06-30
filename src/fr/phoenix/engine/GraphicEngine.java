@@ -6,6 +6,7 @@ import fr.phoenix.engine.object.Player;
 import fr.phoenix.engine.object.basics.Plan;
 import fr.phoenix.engine.object.basics.Plan2;
 import fr.phoenix.engine.object.basics.Sphere;
+import fr.phoenix.engine.object.basics.Triangle;
 import fr.phoenix.engine.object.render.Color;
 import fr.phoenix.engine.object.render.RenderableOject;
 import fr.phoenix.engine.vector.RayCast;
@@ -50,11 +51,11 @@ public class GraphicEngine{
         this.width = display.getWidth();
         this.height = display.getHeight();
 
-        this.light = new Vector3(2, 8, 3);
+        this.light = new Vector3(0, 2, 0);
 
         objects.add(new Sphere(1, new Vector3(4, 0, 0), Color.WHITE, .6));
-        objects.add(new Plan2(new Vector3(-4,0,0), new Vector3(1, 0, 0), Color.WHITE));
-        //objects.add(new Plan(-1, Color.DARK_GRAY));
+        objects.add(new Triangle(new Vector3(3,1,1), new Vector3(3,1,0), new Vector3(3,0,0), Color.BLUE, .5));
+        //objects.add(new Plan2(new Vector3(-4,0,0), new Vector3(1, 0, 0), Color.WHITE));
         //objects.add(new Plan(new Vector3(0, 0,1), new Vector3(1, 0,0), new Vector3(0, 1,0), Color.BLUE));
     }
 
@@ -97,7 +98,12 @@ public class GraphicEngine{
             Vector3 dir = ray.getDirection().normalize();
             double u = 0.5+Math.atan2(dir.getX(), dir.getZ())/(2*Math.PI);
             double v = 0.5-Math.asin(dir.getY())/Math.PI;
-            int rgb = skybox.getRGB((int) (u*skybox.getWidth()), (int) (v*skybox.getHeight()));
+            int rgb = 0;
+            try{
+                rgb = skybox.getRGB((int) (u*skybox.getWidth())+ (u > .9? -1 : 0), (int) (v*skybox.getHeight())+ (v > .9? -1 : 0));
+            }catch (ArrayIndexOutOfBoundsException e){
+                System.out.println("ERROR");
+            }
             return new Color(rgb);
         }
     }

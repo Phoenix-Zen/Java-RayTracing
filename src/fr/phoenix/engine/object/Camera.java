@@ -11,20 +11,14 @@ public class Camera {
     @Getter
     private final int FOV = 90; //in degreeObject
     @Getter
-    public Vector2 resolution = new Vector2(200, 200);
+    public Vector2 resolution = new Vector2(150, 150);
 
     @Getter
     private Vector2 rotation = new Vector2(0,0); //in degree
-    //X: 0.06427876096865394, Y:0.0, Z:0.0766044443118978 | 0
-    //X: 0.06156614753256583, Y:0.0, Z:0.07880107536067221 | 2
-    //X: -0.07660444431189779, Y:0.0, Z:0.06427876096865395 | 90
-    //X: -0.06427876096865395, Y:0.0, Z:-0.07660444431189779 | 180
+    //X: 0.5065019615726758, Y:0.6977904598416802, Z:0.5065019615726757 | 0
 
-    //LTR
-    //X: -0.9090389553440874, Y:0.0, Z:1.0833504408394037 | 40
-    //X: 0.0, Y:0.0, Z:1.414213562373095 | 0
-    //X: -0.4836895252959505, Y:0.0, Z:1.3289260487773493 | 20
-
+    //VECT2 X: 0.7071067811865476, Y:0.0, Z:0.7071067811865475 | 0
+    //VECT2 X: -0.7071067811865477, Y:0.0, Z:-0.7071067811865475 | 180
     private final Player player;
 
     public Camera(Player player) {
@@ -60,14 +54,11 @@ public class Camera {
     }
 
     public Vector3 right(){
-        double half = FOV / 2f;
-        Vector3 d = dir(rotation.add(new Vector2(half, 0)));
-        return d.normalize().times(distFromCam);
+        return getRay(Display.getWIDTH(), Display.getHEIGHT()/2).getDirection().normalize().times(distFromCam);
     }
     private static final double distFromCam = 1;
     public Vector3 left(){
-        double half = FOV / 2f;
-        return dir(rotation.sub(new Vector2(half, 0))).normalize().times(distFromCam);
+        return getRay(0,Display.getHEIGHT()/2).getDirection().normalize().times(distFromCam);
     }
     public Vector3 top(){
         Vector3 forward = forward();
@@ -81,11 +72,12 @@ public class Camera {
         return new Vector2(left().sub(right()).length(), top().sub(bot()).length());
     }
 
-    public void rotate(Vector2 rotation) {
-        this.rotation = this.rotation.add(rotation);
+    public void rotate(Vector2 add) {
+        this.rotation = this.rotation.add(add);
+        Vector2 v = new Vector2(0, rotation.getY() + FOV / 2.0 - FOV * 1.0 * 10 / Display.getHEIGHT());
     }
 
     public RayCast getRay(int i, int j){
-        return new RayCast(pos(), dir(new Vector2(rotation.getX()+FOV/2.0-FOV * 1.0 * i/Display.getWIDTH(),rotation.getY()+FOV/2.0-FOV * 1.0 * j/Display.getHEIGHT())));
+        return new RayCast(pos(), dir(new Vector2(rotation.getX()+FOV/2.0 - i*FOV/(float) Display.getWIDTH(),rotation.getY()+FOV/2.0 - j*FOV/(float)Display.getHEIGHT())));
     }
 }

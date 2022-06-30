@@ -1,6 +1,8 @@
 package fr.phoenix.engine.vector;
 
+import fr.phoenix.engine.object.Object3D;
 import lombok.Getter;
+import lombok.Setter;
 
 public class RayCast {
 
@@ -8,9 +10,22 @@ public class RayCast {
     private final Vector3 origin;
     @Getter
     private final Vector3 direction;
+    @Getter
+    @Setter
+    private Vector3 hit = null;
+    @Getter
+    @Setter
+    private Object3D object3D = null;
+    @Getter
+    @Setter
+    private Vector3 normal = null;
+    @Getter
+    @Setter
+    private double reflection = 0;
+
 
     public RayCast(Vector3 origin, Vector3 direction) {
         this.origin = origin;
-        this.direction = direction;
+        this.direction = direction.normalize();
     }
 }

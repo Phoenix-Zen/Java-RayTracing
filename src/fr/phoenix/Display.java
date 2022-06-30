@@ -8,9 +8,6 @@ import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
@@ -54,14 +51,8 @@ public class Display extends Canvas implements Runnable {
         panel.setFocusable(true);
         panel.requestFocusInWindow();
 
-        panel.getInputMap().put(KeyStroke.getKeyStroke('w'), "forward");
-        panel.getInputMap().put(KeyStroke.getKeyStroke('a'), "left");
-        panel.getInputMap().put(KeyStroke.getKeyStroke('s'), "backward");
-        panel.getInputMap().put(KeyStroke.getKeyStroke('d'), "right");
-        panel.getActionMap().put("forward", new EngineKeyBoardListener(engine));
-        panel.getActionMap().put("left", new EngineKeyBoardListener(engine));
-        panel.getActionMap().put("backward", new EngineKeyBoardListener(engine));
-        panel.getActionMap().put("right", new EngineKeyBoardListener(engine));
+
+        addKeyListener(kListener);
     }
 
     public synchronized void start(){
@@ -119,13 +110,14 @@ public class Display extends Canvas implements Runnable {
         g.setColor(Color.BLACK);
         engine.paint(g);
         g.setColor(Color.BLACK);
-        g.drawString("FPS "+ fps, 0,12);
+        g.drawString("FPS "+ fps+ " | Rotation "+engine.getPlayer().getCamera().getRotation(), 0,12);
         g.dispose();
         bs.show();
     }
 
     private void update(){
         engine.update();
+        kListener.update();
         mListener.update();
     }
 }

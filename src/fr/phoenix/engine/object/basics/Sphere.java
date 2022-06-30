@@ -1,14 +1,10 @@
 package fr.phoenix.engine.object.basics;
 
-import fr.phoenix.Display;
-import fr.phoenix.engine.object.Camera;
 import fr.phoenix.engine.object.Object3D;
+import fr.phoenix.engine.object.render.Color;
 import fr.phoenix.engine.object.render.RenderableOject;
 import fr.phoenix.engine.vector.RayCast;
-import fr.phoenix.engine.vector.Vector2;
 import fr.phoenix.engine.vector.Vector3;
-
-import java.awt.*;
 
 public class Sphere extends Object3D implements RenderableOject {
 
@@ -70,19 +66,26 @@ public class Sphere extends Object3D implements RenderableOject {
         }
     */
     @Override
-    public double raycast(RayCast ray) {
+    public boolean raycast(RayCast ray) {
+        Vector3 dir = ray.getDirection();
         Vector3 hyp = position.sub(ray.getOrigin());
-        double side = hyp.projectOn(ray.getDirection());
+        double side = hyp.projectOn(dir);
+
+        double angle = (Math.acos(hyp.dotProduct(dir)/hyp.length()*dir.length()))*180/Math.PI;
+        if (angle > 90)
+            return false;
+
         //0 dark | 1 light
         if (rayon*rayon <= hyp.squaredLength() - side*side)
-            return 1;
+            return false;
 
-        double asqr = hyp.squaredLength() - side*side;
-        double b = rayon*rayon - asqr;
-        Vector3 onSphere = ray.getDirection().normalize().times(side-b);
+        double xsqr = rayon*rayon - hyp.squaredLength() + side*side;
+        Vector3 onSphere = ray.getOrigin().add(dir.normalize().times(side-Math.sqrt(xsqr)));
         Vector3 normal = onSphere.sub(position).normalize();
-        double r = (normal.getY() + 1) / 2;
-        return r*r;
+        ray.setNormal(normal);
+        ray.setHit(onSphere);
+        ray.setReflection(.3);
+        return true;
     }
 
 }

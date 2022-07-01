@@ -45,4 +45,9 @@ public class Color {
     public Color add(Color c){
         return add(c.red, c.green, c.blue);
     }
+
+    @Override
+    public String toString() {
+        return "R:"+red+" G:"+green+" B:"+blue;
+    }
 }

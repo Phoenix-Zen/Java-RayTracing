@@ -32,15 +32,15 @@ public class GraphicEngine{
     @Getter
     private Vector3 light;
     @Getter
-    private double lighting = 2f;
+    private double lighting = 1f;
     @Getter
-    private static float ambientLight = .05f;
+    private static float ambientLight = .001f;
 
     private BufferedImage skybox;
 
     public GraphicEngine(Display display) {
         try {
-            skybox = ImageIO.read(new File("/home/flo/IdeaProjects/SimpleGame/assets/Sky.jpg"));
+            skybox = ImageIO.read(new File("/home/flo/IdeaProjects/SimpleGame/assets/Nebula.png"));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -49,11 +49,11 @@ public class GraphicEngine{
         this.width = display.getWidth();
         this.height = display.getHeight();
 
-        this.light = new Vector3(0, 5, 0);
+        this.light = new Vector3(15, 5, 15);
 
         objects.add(new Sphere(1, new Vector3(-4, 0, 0), Color.WHITE, .6));
         //objects.add(new Cube(new Vector3(3,0,3), new Vector3(1,0,0), new Vector3(0,0,1), 2,Color.WHITE, .15));
-        objects.add(new Triangle(new Vector3(11, 1.2, 11),new Vector3(9,1.2,9),new Vector3(9,1.2,11), Color.BLUE, .2));
+        objects.add(new Triangle(new Vector3(11, 2.2, 11),new Vector3(9,2.2,9),new Vector3(9,2.2,11), Color.BLUE, .2));
         //for (int i = 0; i < 20; i++) {
         objects.add(new Cube(new Vector3(10,0,10), new Vector3(1,0,0), new Vector3(0,0,1), 2,Color.WHITE, .15));
         //}
@@ -92,14 +92,23 @@ public class GraphicEngine{
         return true;
     }
 
-    public Color getColor(RayCast ray){
+    public Color getColor(RayCast ray, int reflectTime){
         if(rayCast(ray)) {
-            float v = Math.min(Math.max(ambientLight, (float) (lighting*light.sub(ray.getHit()).dotProduct(ray.getNormal().normalize()))), 1);
-            RayCast rayLight = new RayCast(ray.getHit(), light.sub(ray.getHit()).normalize());
+            Vector3 hit = ray.getHit();
+            float v = Math.min(Math.max(ambientLight, (float) (lighting*light.sub(hit).normalize().dotProduct(ray.getNormal().normalize()))), 1);
+            RayCast rayLight = new RayCast(hit, light.sub(hit).normalize());
             if (rayCast(rayLight))
                 v = ambientLight;
             RenderableOject ro = (RenderableOject) ray.getObject3D();
-            return ro.color().multiply(v);
+            Color color = ro.color();
+            if (ray.getReflection() > 0 && reflectTime > 0){
+                Vector3 reflect = ray.getDirection().sub(ray.getNormal().times(2*ray.getDirection().dotProduct(ray.getNormal())));
+                RayCast rayReflection = new RayCast(hit, reflect);
+                rayCast(rayReflection);
+                Color reflectedColor = getColor(rayReflection, reflectTime - 1);
+                color = color.mix(reflectedColor, (float) ray.getReflection());
+            }
+            return color.multiply(v);
         }else {
             Vector3 dir = ray.getDirection().normalize();
             double u = 0.5+Math.atan2(dir.getX(), dir.getZ())/(2*Math.PI);
@@ -122,13 +131,8 @@ public class GraphicEngine{
         for (int i = 0; i < resX; i++) {
             for (int j = 0; j < resY; j++) {
                 RayCast ray = player.getCamera().getRay((int) (i * ratioX), (int) (j * ratioY));
-                Color color = getColor(ray);
-                if (ray.getReflection() != 0){
-                    Vector3 reflect = ray.getDirection().sub(ray.getNormal().times(2*ray.getDirection().dotProduct(ray.getNormal())));
-                    RayCast rayReflection = new RayCast(ray.getHit(), reflect);
-                    rayCast(rayReflection);
-                    color = color.mix(getColor(rayReflection), (float) ray.getReflection());
-                }
+                Color color = getColor(ray, 1);
+
                 graphics.setColor(color.getColor());
                 graphics.fillRect(i * ratioX, j * ratioY, ratioX, ratioY);
 

@@ -56,7 +56,7 @@ public class Camera {
     public Vector3 right(){
         return getRay(Display.getWIDTH(), Display.getHEIGHT()/2).getDirection().normalize().times(distFromCam);
     }
-    private static final double distFromCam = 1;
+    private static final double distFromCam = .0001;
     public Vector3 left(){
         return getRay(0,Display.getHEIGHT()/2).getDirection().normalize().times(distFromCam);
     }
@@ -78,6 +78,8 @@ public class Camera {
     }
 
     public RayCast getRay(int i, int j){
-        return new RayCast(pos(), dir(new Vector2(rotation.getX()+FOV.getX()/2.0 - i*FOV.getX()/(float) Display.getWIDTH(),rotation.getY()+FOV.getY()/2.0 - j*FOV.getY()/(float)Display.getHEIGHT())));
+        double x = rotation.getX() + FOV.getX() * (-i / (float) Display.getWIDTH() + 0.5);
+        double y = rotation.getY() + FOV.getY() * (-j / (float) Display.getHEIGHT() + 0.5);
+        return new RayCast(pos(), dir(new Vector2(x, y)));
     }
 }

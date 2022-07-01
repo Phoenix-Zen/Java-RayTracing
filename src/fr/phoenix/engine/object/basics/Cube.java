@@ -73,7 +73,7 @@ public class Cube extends Object3D implements RenderableOject {
             if(!triangle.raycast(clone))
                 continue;
             clone.setObject3D(triangle);
-            if (nearest == null || nearest.getHit().length() > clone.getHit().length())
+            if (nearest == null || nearest.getHit().sub(nearest.getOrigin()).length() > clone.getHit().sub(clone.getOrigin()).length())
                 nearest = clone;
         }
         if (nearest == null)

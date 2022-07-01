@@ -41,28 +41,31 @@ public class Triangle extends Object3D implements RenderableOject {
         if (t < 0)
             return false;
         Vector3 hit = ray.getOrigin().add(ray.getDirection().times(t-0.001));
-        if (!checkBarycentric(a,b,c,hit))
+
+        if (!checkEdge(a,b, hit))
             return false;
+        if (!checkEdge(b,c, hit))
+            return false;
+        if (!checkEdge(c,a, hit))
+            return false;
+
+        //v2 - v1
+        Vector3 edge1 = c.sub(b);
+        //v0 - v2
+        Vector3 edge2 = a.sub(c);
+
         ray.setHit(hit);
         ray.setNormal(normal.times(denominator > 0 ? -1 : 1));
         ray.setReflection(reflection);
         return true;
     }
 
-    private boolean checkBarycentric(Vector3 a, Vector3 b, Vector3 c, Vector3 hit) {
-        Vector3 v0 = b.sub(a);
-        Vector3 v1 = c.sub(a);
-        Vector3 v2 = hit.sub(a);
-        double d00 = v0.dotProduct(v0);
-        double d01 = v0.dotProduct(v1);
-        double d11 = v1.dotProduct(v1);
-        double d20 = v2.dotProduct(v0);
-        double d21 = v2.dotProduct(v1);
-        double denom = d00 * d11 - d01 * d01;
-        double v = (d11 * d20 - d01 * d21) / denom;
-        double w = (d00 * d21 - d01 * d20) / denom;
-        double u = 1.0 - v - w;
-        return u >= 0 && u <= 1 && v >= 0 && v <= 1 && w >= 0 && w <= 1;
+    private boolean checkEdge(Vector3 a, Vector3 b, Vector3 hit) {
+        Vector3 edge = b.sub(a);
+        Vector3 vh = hit.sub(a);
+        Vector3 C = edge.crossProduct(vh);
+        //double v = (C.length()/2)/normal.length();
+        return !(normal.dotProduct(C) < 0);
     }
 
     public Vector3 getMax() {

@@ -65,4 +65,16 @@ public class Vector3 extends Vector2 implements Cloneable{
     public boolean isZero() {
         return x == 0 && y == 0 && z == 0;
     }
+
+    public Vector3 projectOnApply(Vector3 sub) {
+        return sub.normalize().times(projectOn(sub));
+    }
+
+    public Vector3 max(Vector3 min) {
+        return new Vector3(Math.max(min.x,x),Math.max(min.y,y),Math.max(min.z,z));
+    }
+
+    public Vector3 min(Vector3 min) {
+        return new Vector3(Math.min(min.x,x),Math.min(min.y,y),Math.min(min.z,z));
+    }
 }

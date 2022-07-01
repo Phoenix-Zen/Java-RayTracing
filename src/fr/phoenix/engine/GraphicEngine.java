@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GraphicEngine{
 
@@ -50,8 +51,12 @@ public class GraphicEngine{
 
         this.light = new Vector3(0, 5, 0);
 
-        objects.add(new Sphere(1, new Vector3(4, 0, 0), Color.WHITE, .6));
-        objects.add(new Cube(new Vector3(3,0,3), new Vector3(1,0,0), new Vector3(0,0,1), 2,Color.WHITE, .15));
+        objects.add(new Sphere(1, new Vector3(-4, 0, 0), Color.WHITE, .6));
+        //objects.add(new Cube(new Vector3(3,0,3), new Vector3(1,0,0), new Vector3(0,0,1), 2,Color.WHITE, .15));
+        objects.add(new Triangle(new Vector3(11, 1.2, 11),new Vector3(9,1.2,9),new Vector3(9,1.2,11), Color.BLUE, .2));
+        //for (int i = 0; i < 20; i++) {
+        objects.add(new Cube(new Vector3(10,0,10), new Vector3(1,0,0), new Vector3(0,0,1), 2,Color.WHITE, .15));
+        //}
         //objects.add(new Plan2(new Vector3(-4,0,0), new Vector3(1, 0, 0), Color.WHITE));
         //objects.add(new Plan(new Vector3(0, 0,1), new Vector3(1, 0,0), new Vector3(0, 1,0), Color.BLUE));
     }
@@ -65,12 +70,15 @@ public class GraphicEngine{
 
     public boolean rayCast(RayCast ray){
         RayCast nearest = null;
+        int out = 0;
         for (Object3D obj : objects) {
             RayCast clone = ray.clone();
             if (!(obj instanceof RenderableOject))
                 continue;
             RenderableOject ro = (RenderableOject) obj;
-            if (ro.raycast(clone)) {
+            if (!obj.intersection(ray))
+                continue;
+            if(ro.raycast(clone)) {
                 if (nearest == null || clone.getHit().sub(clone.getOrigin()).length() < nearest.getHit().sub(nearest.getOrigin()).length()) {
                     if (clone.getObject3D() == null)
                         clone.setObject3D(obj);
@@ -86,7 +94,7 @@ public class GraphicEngine{
 
     public Color getColor(RayCast ray){
         if(rayCast(ray)) {
-            float v = Math.min(Math.max(ambientLight, (float) (lighting*light.sub(ray.getHit()).normalize().dotProduct(ray.getNormal().normalize()))), 1);
+            float v = Math.min(Math.max(ambientLight, (float) (lighting*light.sub(ray.getHit()).dotProduct(ray.getNormal().normalize()))), 1);
             RayCast rayLight = new RayCast(ray.getHit(), light.sub(ray.getHit()).normalize());
             if (rayCast(rayLight))
                 v = ambientLight;

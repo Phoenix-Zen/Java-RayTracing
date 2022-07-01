@@ -20,6 +20,9 @@ public class Sphere extends Object3D implements RenderableOject {
         this.position = position;
         this.color = color;
         this.reflection = reflection;
+
+        maxs = position.add(new Vector3(rayon,rayon,rayon));
+        mins = position.sub(new Vector3(rayon,rayon,rayon));
     }
 
 

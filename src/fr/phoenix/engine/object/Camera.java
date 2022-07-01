@@ -9,7 +9,7 @@ import lombok.Getter;
 public class Camera {
 
     @Getter
-    private final int FOV = 90; //in degreeObject
+    private final Vector2 FOV = new Vector2(90, 90); //in degreeObject
     @Getter
     public Vector2 resolution = new Vector2(150, 150);
 
@@ -74,10 +74,10 @@ public class Camera {
 
     public void rotate(Vector2 add) {
         this.rotation = this.rotation.add(add);
-        Vector2 v = new Vector2(0, rotation.getY() + FOV / 2.0 - FOV * 1.0 * 10 / Display.getHEIGHT());
+        Vector2 v = new Vector2(0, rotation.getY() + FOV.getY() / 2.0 - FOV.getY() * 1.0 * 10 / Display.getHEIGHT());
     }
 
     public RayCast getRay(int i, int j){
-        return new RayCast(pos(), dir(new Vector2(rotation.getX()+FOV/2.0 - i*FOV/(float) Display.getWIDTH(),rotation.getY()+FOV/2.0 - j*FOV/(float)Display.getHEIGHT())));
+        return new RayCast(pos(), dir(new Vector2(rotation.getX()+FOV.getX()/2.0 - i*FOV.getX()/(float) Display.getWIDTH(),rotation.getY()+FOV.getY()/2.0 - j*FOV.getY()/(float)Display.getHEIGHT())));
     }
 }

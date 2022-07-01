@@ -4,6 +4,7 @@ import fr.phoenix.engine.object.Object3D;
 import fr.phoenix.engine.object.render.Color;
 import fr.phoenix.engine.object.render.RenderableOject;
 import fr.phoenix.engine.vector.RayCast;
+import fr.phoenix.engine.vector.Vector2;
 import fr.phoenix.engine.vector.Vector3;
 
 import java.util.ArrayList;
@@ -43,6 +44,14 @@ public class Cube extends Object3D implements RenderableOject {
         Vector3 up = normal.times(size);
         triangles.add(new Triangle(tl.add(up),tr.add(up),br.add(up), color, reflection));
         triangles.add(new Triangle(tl.add(up),bl.add(up),br.add(up), color, reflection));
+
+        maxs = new Vector3(Double.NEGATIVE_INFINITY,Double.NEGATIVE_INFINITY,Double.NEGATIVE_INFINITY);
+        mins = new Vector3(Double.POSITIVE_INFINITY,Double.POSITIVE_INFINITY,Double.POSITIVE_INFINITY);
+
+        for (Triangle triangle : triangles) {
+            maxs = maxs.max(triangle.getMax());
+            mins = mins.min(triangle.getMin());
+        }
     }
 
     private void add(Vector3 a, Vector3 b) {

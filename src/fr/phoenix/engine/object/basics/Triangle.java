@@ -14,7 +14,7 @@ public class Triangle extends Object3D implements RenderableOject {
     private final Vector3 c;
     private final double reflection;
 
-
+    private final Vector3 normal;
     public Triangle(Vector3 a, Vector3 b, Vector3 c, Color color) {
         this(a,b,c,color,0);
     }
@@ -24,6 +24,7 @@ public class Triangle extends Object3D implements RenderableOject {
         this.c = c;
         this.color = color;
         this.reflection = reflection;
+        normal = b.sub(a).crossProduct(c.sub(a));
     }
 
     @Override
@@ -33,7 +34,6 @@ public class Triangle extends Object3D implements RenderableOject {
 
     @Override
     public boolean raycast(RayCast ray) {
-        Vector3 normal = b.sub(a).crossProduct(c.sub(a));
         double denominator = ray.getDirection().dotProduct(normal);
         if (denominator == 0)
             return false;
@@ -41,11 +41,10 @@ public class Triangle extends Object3D implements RenderableOject {
         if (t < 0)
             return false;
         Vector3 hit = ray.getOrigin().add(ray.getDirection().times(t-0.001));
-        t-=-0.001;
         if (!checkBarycentric(a,b,c,hit))
             return false;
         ray.setHit(hit);
-        ray.setNormal(normal.times(normal.dotProduct(ray.getDirection()) < 0 ? 1 : -1));
+        ray.setNormal(normal.times(denominator > 0 ? -1 : 1));
         ray.setReflection(reflection);
         return true;
     }
@@ -64,5 +63,18 @@ public class Triangle extends Object3D implements RenderableOject {
         double w = (d00 * d21 - d01 * d20) / denom;
         double u = 1.0 - v - w;
         return u >= 0 && u <= 1 && v >= 0 && v <= 1 && w >= 0 && w <= 1;
+    }
+
+    public Vector3 getMax() {
+        double x = Math.max(c.getX(), Math.max(a.getX(), b.getX()));
+        double y = Math.max(c.getY(), Math.max(a.getY(), b.getY()));
+        double z = Math.max(c.getZ(), Math.max(a.getZ(), b.getZ()));
+        return new Vector3(x,y,z);
+    }
+    public Vector3 getMin() {
+        double x = Math.min(c.getX(), Math.min(a.getX(), b.getX()));
+        double y = Math.min(c.getY(), Math.min(a.getY(), b.getY()));
+        double z = Math.min(c.getZ(), Math.min(a.getZ(), b.getZ()));
+        return new Vector3(x,y,z);
     }
 }

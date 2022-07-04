@@ -77,4 +77,8 @@ public class Vector3 extends Vector2 implements Cloneable{
     public Vector3 min(Vector3 min) {
         return new Vector3(Math.min(min.x,x),Math.min(min.y,y),Math.min(min.z,z));
     }
+
+    public boolean isFinite() {
+        return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z);
+    }
 }

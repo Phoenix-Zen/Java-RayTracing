@@ -18,11 +18,6 @@ public class Plan2 extends Object3D implements RenderableOject {
     }
 
     @Override
-    public Color color() {
-        return color;
-    }
-
-    @Override
     public boolean raycast(RayCast ray) {
         double denominator = ray.getDirection().dotProduct(normal);
         if (denominator == 0)
@@ -33,6 +28,7 @@ public class Plan2 extends Object3D implements RenderableOject {
             return false;
         ray.setHit(ray.getOrigin().add(ray.getDirection().times(t-0.001)));
         ray.setNormal(normal);
+        ray.setColor(color);
         return true;
     }
 }

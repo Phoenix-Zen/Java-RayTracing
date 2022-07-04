@@ -1,6 +1,7 @@
 package fr.phoenix.engine.vector;
 
 import fr.phoenix.engine.object.Object3D;
+import fr.phoenix.engine.object.render.Color;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,9 @@ public class RayCast {
     @Getter
     @Setter
     private Vector3 hit = null;
+    @Getter
+    @Setter
+    private Color color = null;
     @Getter
     @Setter
     private Object3D object3D = null;
@@ -37,5 +41,6 @@ public class RayCast {
         object3D = rayCast.getObject3D();
         normal = rayCast.getNormal();
         reflection = rayCast.getReflection();
+        color = rayCast.getColor();
     }
 }

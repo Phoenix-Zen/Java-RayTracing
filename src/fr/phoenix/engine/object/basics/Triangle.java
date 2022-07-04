@@ -25,11 +25,8 @@ public class Triangle extends Object3D implements RenderableOject {
         this.color = color;
         this.reflection = reflection;
         normal = b.sub(a).crossProduct(c.sub(a));
-    }
-
-    @Override
-    public Color color() {
-        return color;
+        maxs = getMax();
+        mins = getMin();
     }
 
     @Override
@@ -57,6 +54,7 @@ public class Triangle extends Object3D implements RenderableOject {
         ray.setHit(hit);
         ray.setNormal(normal.times(denominator > 0 ? -1 : 1));
         ray.setReflection(reflection);
+        ray.setColor(color);
         return true;
     }
 

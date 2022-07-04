@@ -26,11 +26,6 @@ public class Sphere extends Object3D implements RenderableOject {
     }
 
 
-    @Override
-    public Color color() {
-        return color;
-    }
-
     /*@Override
         public boolean intersect(RayCast rayCast) {
             Vector3 L = position.sub(rayCast.getOrigin());
@@ -91,6 +86,7 @@ public class Sphere extends Object3D implements RenderableOject {
         ray.setNormal(normal);
         ray.setHit(onSphere);
         ray.setReflection(reflection);
+        ray.setColor(color);
         return true;
     }
 

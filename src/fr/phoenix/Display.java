@@ -109,7 +109,7 @@ public class Display extends Canvas implements Runnable {
         g.clearRect(0,0, WIDTH, HEIGHT);
         g.setColor(Color.BLACK);
         engine.paint(g);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         g.drawString("FPS "+ fps+ " | Rotation "+engine.getPlayer().getCamera().getRotation(), 0,12);
         g.dispose();
         bs.show();

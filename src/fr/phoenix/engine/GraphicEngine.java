@@ -11,6 +11,7 @@ import fr.phoenix.engine.vector.RayCast;
 import fr.phoenix.engine.vector.Vector2;
 import fr.phoenix.engine.vector.Vector3;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -23,6 +24,7 @@ public class GraphicEngine{
     private final int height;
     @Getter
     private final Display display;
+    @Getter
     private final Scene scene;
     public GraphicEngine(Display display) {
         this.display = display;
@@ -103,26 +105,27 @@ public class GraphicEngine{
         }
     }
 
+    @SneakyThrows
     public void paint(Graphics g) {
         int resX = (int) player.getCamera().resolution.getX();
         int resY = (int) player.getCamera().resolution.getY();
         int ratioX = (int) (Display.getWIDTH() * 1.0 / resX);
         int ratioY = (int) (Display.getHEIGHT() * 1.0 / resY);
 
-        BufferedImage img = new BufferedImage(Display.getWIDTH(), Display.getHEIGHT(), BufferedImage.TYPE_INT_RGB);
-        Graphics graphics = img.getGraphics();
+        int divideX = 5;
+        int divideY = 5;
 
-        for (int i = 0; i < resX; i++) {
-            for (int j = 0; j < resY; j++) {
-                RayCast ray = player.getCamera().getRay((int) (i * ratioX), (int) (j * ratioY));
-                Color color = getColor(ray, 1);
-                if (color == null)
-                    continue;
-                graphics.setColor(color.getColor());
-                graphics.fillRect(i * ratioX, j * ratioY, ratioX, ratioY);
+        PixelPainter[] pixelPainters = new PixelPainter[divideX*divideY];
+        int sizeX = resX / divideX;
+        int sizeY = resY / divideY;
+        for (int i = 0; i < divideX; i++) {
+            for (int j = 0; j < divideY; j++) {
+                pixelPainters[i*divideX+j] = new PixelPainter(g, this, ratioX*sizeX*i, ratioY*sizeY*j, sizeX, sizeY, ratioX, ratioY);
+                pixelPainters[i*divideX+j].start();
             }
         }
-        g.drawImage(img,0,0, null);
+        for (PixelPainter pixelPainter : pixelPainters)
+            pixelPainter.join();
     }
 
     private boolean reversed = false;

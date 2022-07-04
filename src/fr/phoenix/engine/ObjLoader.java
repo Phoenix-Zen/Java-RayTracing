@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ObjLoader {
 
@@ -35,7 +36,7 @@ public class ObjLoader {
         loadFaces();
     }
 
-    private final int limitFacePerBox = 20;
+    private final int limitPerBox = 20;
 
     @SneakyThrows
     private void loadFaces() {
@@ -43,6 +44,7 @@ public class ObjLoader {
         String line = reader.readLine();
         int couldnt = 0;
         int loaded = 0;
+        int boxes = 0;
 
 
         BoundingBox[] boxIdForPoint = new BoundingBox[pts.size()];
@@ -81,10 +83,11 @@ public class ObjLoader {
                     //BOUNDING BOX
                     BoundingBox box = null;
                     for (int id : involvedPtsId) {
-                        if (boxIdForPoint[id] != null && boxIdForPoint[id].insideItems() < limitFacePerBox)
+                        if (boxIdForPoint[id] != null && boxIdForPoint[id].insideItems() < limitPerBox)
                             box = boxIdForPoint[id];
                     }
                     if (box == null) {
+                        boxes++;
                         box = new BoundingBox(faces);
                         objs.add(box);
                     } else {
@@ -92,15 +95,27 @@ public class ObjLoader {
                             box.addObject(face);
                     }
                     for (int id : involvedPtsId) {
-                        if (boxIdForPoint[id] == null || boxIdForPoint[id].insideItems() >= limitFacePerBox)
+                        if (boxIdForPoint[id] == null || boxIdForPoint[id].insideItems() >= limitPerBox)
                             boxIdForPoint[id] = box;
                     }
                 }
                 loaded+=faces.size();
             }
+            if (objs.size() >= limitPerBox){
+                ArrayList<Object3D> objects = new ArrayList<>();
+                for (int i = 0; i < 20; i++) {
+                    BoundingBox rm = objs.remove(0);
+                    objects.add(rm);
+                    rm.apply();
+                }
+                BoundingBox box = new BoundingBox(objects);
+                objs.add(box);
+                box.apply();
+            }
+
             line = reader.readLine();
         }
-        System.out.println("LOADED "+ objs.size()+" box including "+loaded+" faces (couldnt load "+couldnt+")");
+        System.out.println("LOADED "+objs.size()+" FINAL BOXES from "+ boxes+" boxes including "+loaded+" faces (couldnt load "+couldnt+")");
 
     }
 

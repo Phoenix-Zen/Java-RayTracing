@@ -41,38 +41,6 @@ public class Scene {
 
     public void addObject(Object3D obj){
         objects.add(obj);
-        if (!obj.maxs.isFinite() || !obj.mins.isFinite()){
-            boxes.add(obj);
-            return;
-        }
-        for (int x = (int) obj.mins.getX(); x <= obj.maxs.getX(); x++)
-            for (int y = (int) obj.mins.getY(); y <= obj.maxs.getY(); y++)
-                for (int z = (int) obj.mins.getZ(); z <= obj.maxs.getZ(); z++)
-                    getBox(new Vector3(x,y,z)).addObject(obj);
-
     }
 
-    private BoundingBox getBox(Vector3 position) {
-        int x = (int) position.getX();
-        int y = (int) position.getY();
-        int z = (int) position.getZ();
-        for (Object3D box : boxes) {
-            if (box instanceof BoundingBox) {
-                Vector3 posBox = box.getPosition();
-                int xBox = (int) posBox.getX();
-                int yBox = (int) posBox.getY();
-                int zBox = (int) posBox.getZ();
-                if (xBox == x && yBox == y && zBox == z)
-                    return (BoundingBox) box;
-            }
-        }
-        BoundingBox newBox = new BoundingBox(new Vector3(x,y,z), 1);
-        boxes.add(newBox);
-        return newBox;
-    }
-
-    public void addObjects(ArrayList<Object3D> objs) {
-        for (Object3D obj : objs)
-            addObject(obj);
-    }
 }

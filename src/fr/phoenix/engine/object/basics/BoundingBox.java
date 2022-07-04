@@ -18,8 +18,8 @@ public class BoundingBox extends Object3D implements RenderableOject {
         mins = pos.clone();
         maxs = mins.add(new Vector3(size,size,size));
     }
-    public BoundingBox(ArrayList<? extends Object3D> triangles) {
-        this.inside.addAll(triangles);
+    public BoundingBox(ArrayList<? extends Object3D> objects) {
+        this.inside.addAll(objects);
         apply();
     }
 

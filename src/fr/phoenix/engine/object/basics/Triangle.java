@@ -46,11 +46,6 @@ public class Triangle extends Object3D implements RenderableOject {
         if (!checkEdge(c,a, hit))
             return false;
 
-        //v2 - v1
-        Vector3 edge1 = c.sub(b);
-        //v0 - v2
-        Vector3 edge2 = a.sub(c);
-
         ray.setHit(hit);
         ray.setNormal(normal.times(denominator > 0 ? -1 : 1));
         ray.setReflection(reflection);

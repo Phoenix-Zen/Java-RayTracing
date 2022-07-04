@@ -4,7 +4,9 @@ import fr.phoenix.Display;
 import fr.phoenix.engine.object.Object3D;
 import fr.phoenix.engine.object.Player;
 import fr.phoenix.engine.object.Scene;
+import fr.phoenix.engine.object.basics.Cube;
 import fr.phoenix.engine.object.basics.Plan;
+import fr.phoenix.engine.object.basics.Sphere;
 import fr.phoenix.engine.object.render.Color;
 import fr.phoenix.engine.object.render.RenderableOject;
 import fr.phoenix.engine.vector.RayCast;
@@ -36,8 +38,10 @@ public class GraphicEngine{
 
         ObjLoader loader = new ObjLoader("/home/flo/IdeaProjects/SimpleGame/assets/tree.obj");
         loader.load();
-        scene.addObject(loader.getObject());
-        scene.addObject(new Plan(-1, Color.DARK_GRAY));
+        //scene.addObject(loader.getObject());
+        scene.addObject(new Plan(-1, Color.DARK_GRAY, .2f));
+        scene.addObject(new Sphere(2.0, new Vector3(0,1,0), Color.RED, .5f));
+        //scene.addObject(new Cube(new Vector3(0,3, 0), new Vector3(0,0,1), new Vector3(1,0,0), 6f, Color.BLUE, .4f));
         System.out.println("ENDED");
     }
     @Getter
@@ -74,8 +78,8 @@ public class GraphicEngine{
             Vector3 light = scene.getLight();
             float v = Math.min(Math.max(ambientLight, (float) (scene.getLighting()*light.sub(hit).normalize().dotProduct(ray.getNormal().normalize()))), 1);
             RayCast rayLight = new RayCast(hit, light.sub(hit).normalize());
-            //if (rayCast(rayLight))
-            //    v = ambientLight;
+            if (rayCast(rayLight))
+                v = ambientLight;
             RenderableOject ro = (RenderableOject) ray.getObject3D();
             Color color = ray.getColor();
             if (color == null)

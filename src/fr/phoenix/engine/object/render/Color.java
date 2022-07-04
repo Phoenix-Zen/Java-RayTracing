@@ -33,6 +33,7 @@ public class Color {
     public static final Color MAGENTA = new Color(1.0F, 0.0F, 1.0F);
     public static final Color GRAY = new Color(0.5F, 0.5F, 0.5F);
     public static final Color DARK_GRAY = new Color(0.2F, 0.2F, 0.2F);
+    public static final Color BROWN = new Color(.3254F, .1921F, 0.0941F);
 
     //0 < ratio < 1
     public Color mix(Color color, float ratio) {

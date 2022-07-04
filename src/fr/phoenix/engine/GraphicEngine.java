@@ -72,8 +72,8 @@ public class GraphicEngine{
             Vector3 light = scene.getLight();
             float v = Math.min(Math.max(ambientLight, (float) (scene.getLighting()*light.sub(hit).normalize().dotProduct(ray.getNormal().normalize()))), 1);
             RayCast rayLight = new RayCast(hit, light.sub(hit).normalize());
-            if (rayCast(rayLight))
-                v = ambientLight;
+            //if (rayCast(rayLight))
+            //    v = ambientLight;
             RenderableOject ro = (RenderableOject) ray.getObject3D();
             Color color = ray.getColor();
             if (color == null)
@@ -103,11 +103,15 @@ public class GraphicEngine{
         }
     }
 
-    public void paint(Graphics graphics) {
+    public void paint(Graphics g) {
         int resX = (int) player.getCamera().resolution.getX();
         int resY = (int) player.getCamera().resolution.getY();
         int ratioX = (int) (Display.getWIDTH() * 1.0 / resX);
         int ratioY = (int) (Display.getHEIGHT() * 1.0 / resY);
+
+        BufferedImage img = new BufferedImage(Display.getWIDTH(), Display.getHEIGHT(), BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = img.getGraphics();
+
         for (int i = 0; i < resX; i++) {
             for (int j = 0; j < resY; j++) {
                 RayCast ray = player.getCamera().getRay((int) (i * ratioX), (int) (j * ratioY));
@@ -118,6 +122,7 @@ public class GraphicEngine{
                 graphics.fillRect(i * ratioX, j * ratioY, ratioX, ratioY);
             }
         }
+        g.drawImage(img,0,0, null);
     }
 
     private boolean reversed = false;

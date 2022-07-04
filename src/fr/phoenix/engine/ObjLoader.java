@@ -47,7 +47,17 @@ public class ObjLoader {
 
         BoundingBox[] boxIdForPoint = new BoundingBox[pts.size()];
         ArrayList<Object3D> faces;
+        Color color = Color.WHITE;
         while (line != null){
+            if (line.startsWith("usemtl ")){
+                switch (line.split(" ")[1]){
+                    case "Bark":
+                        color = Color.BROWN;
+                        break;
+                    case "Tree":
+                        color = Color.GREEN;
+                }
+            }
             if (line.startsWith("f ")){
                 faces = new ArrayList<>();
                 String[] pIds = line.split(" ");
@@ -60,8 +70,11 @@ public class ObjLoader {
                 }
 
                 if (involvedPts.length == 3)
-                    faces.add(new Triangle(involvedPts[0], involvedPts[1], involvedPts[2], Color.GREEN));
-                else
+                    faces.add(new Triangle(involvedPts[0], involvedPts[1], involvedPts[2], color));
+                else if (involvedPts.length == 4) {
+                    faces.add(new Triangle(involvedPts[0], involvedPts[1], involvedPts[2], color));
+                    faces.add(new Triangle(involvedPts[0], involvedPts[2], involvedPts[3], color));
+                }else
                     couldnt++;
 
                 if (faces.size() > 0) {

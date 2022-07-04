@@ -37,8 +37,8 @@ public class BoundingBox extends Object3D implements RenderableOject {
     public boolean raycast(RayCast ray) {
         RayCast nearest = null;
         for (Object3D obj : inside) {
-            if (!(obj instanceof RenderableOject))
-                continue;
+            if (!obj.intersection(ray)){continue;}
+            if (!(obj instanceof RenderableOject)) {continue;}
             RenderableOject ro = (RenderableOject) obj;
             RayCast clone = ray.clone();
             if(!ro.raycast(clone))

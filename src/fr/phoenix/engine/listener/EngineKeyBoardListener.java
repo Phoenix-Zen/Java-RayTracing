@@ -37,6 +37,8 @@ public class EngineKeyBoardListener extends KeyAdapter {
             engine.getPlayer().getCamera().resolution = new Vector2(600,600);
         } else if (e.getKeyCode() == KeyEvent.VK_4) {
             engine.getPlayer().getCamera().resolution = new Vector2(1200,1200);
+        } else if (e.getKeyCode() == KeyEvent.VK_5) {
+            GraphicEngine.smooth = !GraphicEngine.smooth;
         }
     }
 

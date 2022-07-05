@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 public class PixelPainter extends Thread{
 
@@ -35,15 +36,55 @@ public class PixelPainter extends Thread{
 
     @Override
     public void run() {
+        boolean smooth = GraphicEngine.smooth;
+        RayCast[][] rays = new RayCast[sizeX][sizeY];
+        int[][] precise = new int[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
+                if (precise[i][j] != 0)
+                    continue;
                 RayCast ray = ge.getPlayer().getCamera().getRay(fromX+i*ratioX, fromY+j * ratioY);
                 Color color = ge.getColor(ray, 1);
                 if (color == null)
                     continue;
-                setPriority(1);
+                rays[i][j] = ray;
                 g.setColor(color.getColor());
                 g.fillRect(i * ratioX, j * ratioY, ratioX, ratioY);
+
+                if (smooth){
+                    if (i != 0 && rays[i-1][j].getObject3D() != ray.getObject3D()){
+                        precise[i-1][j] = 1;
+                        precise[i][j] = 1;
+                        if (j != 0 && rays[i][j-1].getObject3D() != ray.getObject3D()){
+                            precise[i][j-1] = 1;
+                            precise[i-1][j-1] = 1;
+                        }
+                    }
+                    else if (j != 0 && rays[i][j-1].getObject3D() != ray.getObject3D()){
+                        precise[i][j-1] = 1;
+                        precise[i][j] = 1;
+                    }
+                }
+            }
+        }
+        if (smooth){
+            int ratioXHalf = ratioX / 2;
+            int ratioYHalf = ratioY / 2;
+            for (int i = 0; i < precise.length; i++) {
+                for (int j = 0; j < precise[i].length; j++) {
+                    if (precise[i][j] == 0)
+                        continue;
+                    for (int id = 0; id < ratioXHalf; id++) {
+                        for (int jd = 0; jd < ratioYHalf; jd++) {
+                            RayCast ray = ge.getPlayer().getCamera().getRay(fromX+i*ratioX+id*ratioXHalf, fromY+j * ratioY+jd*ratioYHalf);
+                            Color color = ge.getColor(ray, 1);
+                            if (color == null || ray.getObject3D() == null)
+                                continue;
+                            g.setColor(color.getColor());
+                            g.fillRect(i * ratioX+id*ratioXHalf, j * ratioY+jd*ratioYHalf, ratioXHalf, ratioYHalf);
+                        }
+                    }
+                }
             }
         }
         g.dispose();
